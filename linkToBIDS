@@ -1,0 +1,133 @@
+#!/bin/bash
+
+if [ "$#" -lt 3 ] 
+then
+echo "Usage: $0 <in_root_hcp> <out_root_bids> <subjids...>"
+exit 1
+fi
+
+in_hcp=$1
+out_root_bids=$2
+
+#out_root_bids organized as:
+
+#  bids
+#    sub-XXX
+#  fakeprepdwi_3T
+#    bedpost
+#      sub-XXX
+#    prepdwi
+#      sub-XXX
+#    work
+#      sub-XXX/t1/t1.brain.inorm.nii.gz 
+#  fakeprepdwi_7T
+#    bedpost
+#    prepdwi
+#    work
+
+
+if [ -e $in_hcp ]
+then
+ in_hcp=`realpath $in_hcp`
+fi
+
+shift 2
+
+mkdir -p $out_root_bids
+
+
+
+
+
+for subj in $@
+do
+ 
+ for scanner in 3T 7T
+ do
+	 if [ "$scanner" = "3T" ]
+	 then
+		 in_diff=Diffusion
+	 else
+		 in_diff=Diffusion_7T
+	 fi
+
+out_bids=$out_root_bids/bids_${scanner}
+mkdir -p $out_bids
+
+ in_dwi=$in_hcp/$subj/T1w/${in_diff}/data.nii.gz
+ in_graddev=$in_hcp/$subj/T1w/${in_diff}/grad_dev.nii.gz
+ in_bvec=$in_hcp/$subj/T1w/${in_diff}/bvecs
+ in_bval=$in_hcp/$subj/T1w/${in_diff}/bvals
+ in_brainmask=$in_hcp/$subj/T1w/${in_diff}/nodif_brain_mask.nii.gz
+ in_bedpost=$in_hcp/$subj/T1w/${in_diff}.bedpostX
+
+ 
+  sub_dir=$out_bids/sub-$subj
+  anat_dir=$sub_dir/anat
+  dwi_dir=$sub_dir/dwi
+
+ in_t1w=$in_hcp/$subj/T1w/T1w_acpc_dc_restore.nii.gz
+ in_t1w_brain=$in_hcp/$subj/T1w/T1w_acpc_dc_restore_brain.nii.gz
+ in_t2w=$in_hcp/$subj/T1w/T2w_acpc_dc_restore.nii.gz
+ in_t2w_brain=$in_hcp/$subj/T1w/T2w_acpc_dc_restore_brain.nii.gz
+
+ 
+ out_t1w=$anat_dir/sub-${subj}_acq-procHCP_T1w.nii.gz
+ out_t1w_brain=$anat_dir/sub-${subj}_acq-procHCP_T1w_brain.nii.gz
+ out_t2w=$anat_dir/sub-${subj}_acq-procHCP_T2w.nii.gz
+ out_t2w_brain=$anat_dir/sub-${subj}_acq-procHCP_T2w_brain.nii.gz
+
+if [ -e $in_dwi -a -e $in_bvec -a -e $in_bval -a -e $in_graddev -a -e $in_brainmask -a -e $in_t1w -a -e $in_t2w ]
+ then 
+
+  mkdir -p $anat_dir $dwi_dir
+  
+ ln -sfvn $in_t1w $out_t1w
+ ln -sfvn $in_t1w_brain $out_t1w_brain
+ ln -sfvn $in_t2w $out_t2w
+ ln -sfvn $in_t2w_brain $out_t2w_brain
+
+
+  out_prepdwi_root=$out_root_bids/fakeprepdwi_$scanner
+  out_prepdwi_bedpost_root=$out_prepdwi_root/bedpost
+  out_prepdwi=$out_prepdwi_root/prepdwi/sub-$subj
+  out_prepdwi_t1=$out_prepdwi_root/work/sub-$subj/t1
+  out_prepdwi_bedpost=$out_prepdwi_bedpost_root/sub-$subj
+
+   mkdir -p $out_prepdwi/dwi $out_prepdwi_t1 $out_prepdwi_bedpost_root
+
+
+  out_dwi=$out_prepdwi/dwi/sub-${subj}_dwi_space-T1w_preproc.nii.gz
+  out_bvec=$out_prepdwi/dwi/sub-${subj}_dwi_space-T1w_preproc.bvec
+  out_bval=$out_prepdwi/dwi/sub-${subj}_dwi_space-T1w_preproc.bval
+  out_brainmask=$out_prepdwi/dwi/sub-${subj}_dwi_space-T1w_brainmask.nii.gz
+  out_graddev=$out_prepdwi/dwi/sub-${subj}_dwi_space-T1w_preproc.grad_dev.nii.gz
+
+  if [ -e $in_bedpost ]
+  then
+  ln -sfvn $in_bedpost $out_prepdwi_bedpost
+  fi
+
+  if [ -e $in_t1w_brain ]
+  then
+  ln -sfvn $in_t1w_brain $out_prepdwi_t1/t1.brain.inorm.nii.gz
+  fi
+
+  ln -sfvn $in_dwi $out_dwi
+  ln -sfvn $in_bvec $out_bvec
+  ln -sfvn $in_bval $out_bval
+  ln -sfvn $in_brainmask $out_brainmask
+  ln -sfvn $in_graddev $out_graddev
+
+  fi
+
+
+ done #scanner
+
+ 
+
+  
+
+done #subj
+
+

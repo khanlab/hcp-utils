@@ -1,0 +1,27 @@
+#!/bin/bash
+
+
+
+
+
+for subj in `ls -d [0-9]*`
+do
+
+ for discard in MEG unprocessed/MEG
+ do
+   if [ -e $subj/$discard ]
+
+   then
+echo	   rm -rf $subj/$discard
+	   rm -rf $subj/$discard
+   fi
+ done
+
+ archive=unprocessed_release-notes_Results.tar
+ if [ ! -e $archive ]
+ then
+ echo "pushd $subj; tar --remove-files -cvf $archive  unprocessed release-notes MNINonLinear/Results; popd; "
+ pushd $subj; tar --remove-files -cvf $archive  unprocessed release-notes MNINonLinear/Results; popd; 
+fi
+
+done
