@@ -1,0 +1,39 @@
+#!/bin/bash
+
+function usage {
+echo "Usage: $0 <out_dir> <subjids...>"
+echo ""
+echo " Run: aws configure "
+echo "  to set-up S3 access to HCP = needs access ID and secret access code"
+
+}
+
+
+if [ "$#" -lt 2 ]
+then
+ usage
+ exit 1
+fi
+
+
+out_dir=$1
+
+shift  1
+root_uri=s3://hcp-openaccess/HCP_1200
+
+mkdir -p $out_dir
+
+
+for subj in $@
+do
+	 
+
+
+   aws s3 cp --recursive $root_uri/$subj $out_dir/$subj
+
+
+done
+
+
+
+

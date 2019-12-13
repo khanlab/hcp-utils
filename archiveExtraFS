@@ -1,0 +1,24 @@
+#!/bin/bash
+
+
+
+
+
+for subj in `ls -d [0-9]*`
+#for subj in 100206
+do
+
+	if [ -e $subj/T1w ]
+	then
+ pushd $subj/T1w
+
+  archive=${subj}.freesurfer.tar
+ if [ ! -e $archive ]
+ then
+echo  tar --remove-files -cvf $archive  $subj 
+  tar --remove-files -cvf $archive  $subj 
+fi
+  popd
+  fi
+
+done

@@ -1,0 +1,58 @@
+#!/bin/bash
+
+function usage {
+echo "Usage: $0 <out_dir> <subjids...>"
+echo ""
+echo " Run: aws configure "
+echo "  to set-up S3 access to HCP = needs access ID and secret access code"
+
+}
+
+
+if [ "$#" -lt 2 ]
+then
+ usage
+ exit 1
+fi
+
+
+out_dir=$1
+
+shift  1
+root_uri=s3://hcp-openaccess/HCP_1200
+
+mkdir -p $out_dir
+
+
+
+for subj in $@
+do
+	 
+ for task in rfMRI_REST1 rfMRI_REST2
+ do
+	 for pe in LR RL
+	do
+
+   scan=${task}_${pe}
+   folder=MNINonLinear/Results/${scan}
+
+#   file=${scan}.nii.gz
+   for file in \
+	   ${scan}.nii.gz \
+	   ${scan}_hp2000_clean.nii.gz \
+	   ${scan}_Atlas_MSMAll_hp2000_clean.dtseries.nii 
+	   do 
+		if [ ! -e $out_dir/$subj/$folder/$file ]
+		then
+			 aws s3 cp  $root_uri/$subj/$folder/$file $out_dir/$subj/$folder/$file
+		fi
+	   done
+
+
+ done
+ done
+done
+
+
+
+

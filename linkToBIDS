@@ -77,16 +77,31 @@ mkdir -p $out_bids
  out_t2w=$anat_dir/sub-${subj}_acq-procHCP_T2w.nii.gz
  out_t2w_brain=$anat_dir/sub-${subj}_acq-procHCP_T2w_brain.nii.gz
 
-if [ -e $in_dwi -a -e $in_bvec -a -e $in_bval -a -e $in_graddev -a -e $in_brainmask -a -e $in_t1w -a -e $in_t2w ]
+if [ -e $in_dwi ]
  then 
 
   mkdir -p $anat_dir $dwi_dir
-  
+ 
+ if [ -e $in_t1w -a -e $in_t1w_brain ]
+ then
  ln -sfvn $in_t1w $out_t1w
  ln -sfvn $in_t1w_brain $out_t1w_brain
+ fi
+
+ in_t1w_dres=$in_hcp/$subj/T1w/T1w_acpc_dc_restore_1.25.nii.gz
+ out_t1w_dres=$anat_dir/sub-${subj}_acq-procHCPdiffresample_T1w.nii.gz
+
+ if [ -e $in_t1w_dres ]
+ then
+ ln -sfvn $in_t1w_dres $out_t1w_dres
+ fi
+
+ 
+ if [ -e $in_t2w -a -e $in_t2w_brain ]
+ then
  ln -sfvn $in_t2w $out_t2w
  ln -sfvn $in_t2w_brain $out_t2w_brain
-
+fi
 
   out_prepdwi_root=$out_root_bids/fakeprepdwi_$scanner
   out_prepdwi_bedpost_root=$out_prepdwi_root/bedpost
