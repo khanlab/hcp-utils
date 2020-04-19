@@ -23,5 +23,5 @@ It uses a config.yml file to pick what files to include from each zip file, and 
 3. Use the `sample_file_listing.txt` to update the config.yml to include or exclude any files you wish. This text file contains a listing of all the files in each zip file, replacing the subject id with `{subject}`. 
 
 4. Do a dry-run with:
-    python 
+    unzip_hcp.py -n 
 
