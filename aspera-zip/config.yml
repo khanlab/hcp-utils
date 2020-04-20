@@ -9,12 +9,23 @@ hcp_csv: /scratch/akhanf/incoming_hcp_7T/hcp1200_demog_behav.20200414.csv
 zipfiles:
  3T_Structural_1.6mm_preproc:
    download:
+    - '*'
    exclude:
 
  7T_Diffusion_preproc:
    download:
-    - '*'
    exclude:
+
+ 7T_MOVIE_2mm_preproc:
+   download:
+    - '{subject}/MNINonLinear/Results/rfMRI_MOVIE?_7T_??/rfMRI_MOVIE?_7T_??_Atlas_MSMAll.dtseries.nii'
+   exclude:
+
+ 7T_MOVIE_1.6mm_preproc:
+   download:
+    - '{subject}/MNINonLinear/Results/rfMRI_MOVIE?_7T_??/rfMRI_MOVIE?_7T_??_Atlas_1.6mm_MSMAll.dtseries.nii'
+   exclude:
+
 
  7T_REST_2mm_preproc:
    download:
@@ -25,3 +36,5 @@ zipfiles:
    download:
     - '{subject}/MNINonLinear/Results/rfMRI_REST?_7T_??/rfMRI_REST?_7T_??_Atlas_1.6mm_MSMAll.dtseries.nii'
    exclude:
+
+
