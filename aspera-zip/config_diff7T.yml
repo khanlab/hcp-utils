@@ -13,6 +13,7 @@ zipfiles:
 
  7T_Diffusion_preproc:
    download:
+    - '*'
    exclude:
 
  7T_MOVIE_2mm_preproc:

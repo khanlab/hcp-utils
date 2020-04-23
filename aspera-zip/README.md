@@ -16,7 +16,7 @@ It uses a config.yml file to pick what files to include from each zip file, and 
 1. Clone this repository
     git clone http://khanlab/hcp-utils/aspera-zip
 
-2. Edit the config.yml file, setting `out_scratch_dir` to a scratch folder you control
+2. Edit one of the config files (e.g. `config.yml` or `config_diff7T.yml`),  setting `out_scratch_dir` to a scratch folder you control. 
 
 3. Choose what zip files you want to extract by placing `'*'` in the download list.
 
@@ -25,3 +25,5 @@ It uses a config.yml file to pick what files to include from each zip file, and 
 4. Do a dry-run with:
     unzip_hcp.py -n 
 
+5. Extract the files using:
+    unzip_hcp.py -x
